@@ -1,5 +1,14 @@
 @var = (2 + 4) * 7
 echo @var
+;>> 42
 
 @VariableName = "This is a String!"
 echo @VariableName
+;>> This is a String!
+
+;Variables can be used in expressions, though the variable can't be the first arg..
+@a = 42
+;Can't be: @b = @a + 25
+@b = 25 + @a
+echo @a
+;>> 67

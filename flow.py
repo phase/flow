@@ -34,11 +34,11 @@ def lex(contents):
         elif tok == "\n" or tok == "<EOF>":
             if comment == 1:
                 comment = 0
-            elif expr != "" and isexpr == 1:
+            elif expr != "" and isexpr == 1 and state == 0:
                 tokens.append("EXPR:" + expr)
                 expr = ""
                 isexpr = 0
-            elif expr != "" and isexpr == 0:
+            elif expr != "" and isexpr == 0 and state == 0:
                 tokens.append("NUM:" + expr)
                 expr = ""
             elif var != "":
@@ -104,7 +104,7 @@ def echo(p):
     elif p[0:3] == "NUM":
         p = p[4:]
     elif p[0:4] == "EXPR":
-        p = eval(p[5:])
+        p = evaluate(p[5:])
     print(p)
 
 def assignVariable(varname, value):
@@ -119,15 +119,16 @@ def getVariable(varname):
 
 def getInput(prompt, var):
     i = input(prompt + " ")
-    symbols[var] = "STRING:\"" + i + "\""
+    try:
+        symbols[var] = "NUM:" + str(eval(i))
+    except TypeError:
+        symbols[var] = "STRING:\"" + i + "\""
 
-def evaluate(s):
+def evaluate(st):
     for v in symbols.keys():
-        if s.find(v) != -1:
-            s.replace(v, str(getVariable("VAR:" + v)).split(":")[1])
-            s
-            print(s)
-    return eval(s)
+        if st.find(v) != -1:
+           st = st.replace(v, str(getVariable("VAR:" + v)).split(":")[1])
+    return eval(st)
 
 def parse(toks):
     i = 0
