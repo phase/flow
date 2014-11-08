@@ -18,14 +18,23 @@ def lex(contents):
     isexpr = 0
     varstarted = 0
     var = ""
+    comment = 0
 
     contents = list(contents)
     for char in contents:
         tok += char
-        if tok == " " and state == 0:
+        if comment == 0 and tok == ";":
+            comment = 1
+        elif comment == 1:
+            if tok == "\n" or tok == "<EOF>":
+                comment = 0
+            tok = ""
+        elif tok == " " and state == 0:
             tok = ""
         elif tok == "\n" or tok == "<EOF>":
-            if expr != "" and isexpr == 1:
+            if comment == 1:
+                comment = 0
+            elif expr != "" and isexpr == 1:
                 tokens.append("EXPR:" + expr)
                 expr = ""
                 isexpr = 0

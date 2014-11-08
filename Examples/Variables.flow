@@ -1,0 +1,7 @@
+@var = (2 + 4) * 7
+echo @var
+
+@VariableName = "This is a String!"
+echo @VariableName
+
+echo

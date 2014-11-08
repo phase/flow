@@ -1,0 +1,7 @@
+;Comments are made with a semicolon at the front of a line
+
+echo "This works!"
+
+;Comments can not go at the end of lines
+
+echo "This next comment will crash!" ;This doesn't work
