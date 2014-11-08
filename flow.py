@@ -35,6 +35,7 @@ def lex(contents):
             elif var != "":
                 tokens.append("VAR:" + var)
                 var = ""
+                varstarted = 0
             tok = ""
         elif tok == "=" and state == 0:
             if var != "":
@@ -43,7 +44,7 @@ def lex(contents):
                 varstarted = 0
             tokens.append("EQUALS")
             tok = ""
-        elif tok == "@" and state == 0:
+        elif tok == "@" and state == 0 and isexpr == 0:
             varstarted = 1
             var += tok
             tok = ""
@@ -68,6 +69,9 @@ def lex(contents):
             tok = ""
         elif tok == "+" or tok == "-" or tok == "/" or tok == "*" or tok == "(" or tok == ")":
             isexpr = 1
+            expr += tok
+            tok = ""
+        elif isexpr == 1:
             expr += tok
             tok = ""
         elif tok == "\"" or tok == " \"":
@@ -102,11 +106,19 @@ def getVariable(varname):
     if varname in symbols:
         return symbols[varname]
     else:
-        return "Undefined Variable: " + varname
+        return "Undefined:" + varname
 
 def getInput(prompt, var):
     i = input(prompt + " ")
     symbols[var] = "STRING:\"" + i + "\""
+
+def evaluate(s):
+    for v in symbols.keys():
+        if s.find(v) != -1:
+            s.replace(v, str(getVariable("VAR:" + v)).split(":")[1])
+            s
+            print(s)
+    return eval(s)
 
 def parse(toks):
     i = 0
@@ -121,7 +133,7 @@ def parse(toks):
             if toks[i+2][0:3] == "VAR":
                 assignVariable(toks[i], getVariable(toks[i+2]))
             if toks[i+2][0:4] == "EXPR":
-                assignVariable(toks[i], "NUM:" + str(eval(toks[i+2][5:])))
+                assignVariable(toks[i], "NUM:" + str(evaluate(toks[i+2][5:])))
             else:
                 assignVariable(toks[i], toks[i + 2])
             i += 3
