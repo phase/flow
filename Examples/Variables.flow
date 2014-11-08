@@ -3,5 +3,3 @@ echo @var
 
 @VariableName = "This is a String!"
 echo @VariableName
-
-echo
